@@ -1,40 +1,29 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TouchableHighLight, Alert } from 'react-native';
+import React from 'react';
+import { StyleSheet, Text, View, TouchableHighlight, Alert } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import axios from 'axios';
+import useCripto from '../hooks/useCripto';
 
-const Formulario = ({
-  moneda,
-  criptoMoneda,
-  setMoneda,
-  setCriptoMoneda,
-  setconsultarApi,
-}) => {
+const Formulario = () => {
 
-  const [criptoMonedas, setCriptoMonedas] = useState([]);
+  const {
+    moneda,
+    criptomoneda,
+    criptomonedas,
+    obtenerMoneda,
+    obtenerCriptoMoneda,
+    cotizarCriptomoneda,
+    consultarAPI,
+  } = useCripto();
 
-  useEffect(() => {
-    const consultarAPI = async () => {
-      const url = 'https://min-api.cryptocompare.com/data/top/totaltoptiervolfull?limit=10&tsym=USD';
-      const resultado = await axios.get(url);
-      setCriptoMonedas(resultado.data.Data);
-    };
-    consultarAPI();
-  }, []);
+  consultarAPI();
 
-  const obtenerMoneda = monedaOtenida => {
-    setMoneda(monedaOtenida);
-  };
-  const obtenerCriptoMoneda = CriptoMonedaOtenida => {
-    setCriptoMoneda(CriptoMonedaOtenida);
-  };
   const cotizarPrecio = () => {
-    if (moneda.trim() === '' || criptoMoneda.trim() === ''){
+    if (moneda.trim() === '' || criptomoneda.trim() === ''){
       mostrarAlerta();
       return;
     }
-    setconsultarApi(true);
+    cotizarCriptomoneda();
   };
   const mostrarAlerta = () =>{
     Alert.alert(
@@ -77,8 +66,9 @@ const Formulario = ({
       </Picker>
 
       <Text style={styles.label}>Criptomoneda</Text>
+
       <Picker
-        selectedValue={criptoMoneda}
+        selectedValue={criptomoneda}
         onValueChange={CriptoMonedaOtenida => obtenerCriptoMoneda(CriptoMonedaOtenida)}
         style={{ height: 120 }}
       >
@@ -86,21 +76,23 @@ const Formulario = ({
           label="- Seleccione -"
           value=""
         />
-        {criptoMonedas.map(cripto => (
+
+          {criptomonedas?.map(cripto => (
           <Picker.Item
             key={cripto.CoinInfo.Id}
             label={cripto.CoinInfo.FullName}
             value={cripto.CoinInfo.Name}
           />
-        ))}
+        ))
+        }
       </Picker>
 
-      <TouchableHighLight
+      <TouchableHighlight
         style={styles.btnCotizar}
         onPress={() => cotizarPrecio()}
         >
         <Text style={styles.textoCotizar}>Cotizar</Text>
-      </TouchableHighLight>
+      </TouchableHighlight>
     </View>
    );
 };

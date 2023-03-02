@@ -1,9 +1,12 @@
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
+import useCripto from '../hooks/useCripto';
 
-const Cotizacion = ({resultadoFinal}) => {
+const Cotizacion = () => {
 
-  if (Object.keys(resultadoFinal).length === 0) {return null;}//para no renderizar nada en caso de que no este nada seleccionado
+  const {resultadoFinal} = useCripto();
+
+  if (Object.keys(resultadoFinal).length === 0) {return null;}
 
   return (
     <View style={styles.resultado}>
